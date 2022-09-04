@@ -1709,6 +1709,14 @@ def build_url(base_url, service, major_version, resource_type,
         else:
             parts = (base_url, subpath.lstrip('/'), service,
                      str(major_version), resource_type)
+            # Issue 3134 
+            if base_url == "http://service.ncedc.org":
+                if service in ["dataselect", "event", "station",]:
+                    if resource_type in ["application.wadl", "catalogs", "contributors"]:
+                        subpath = "ws/fdsnws"
+                        url_tail = "-".join((str(major_version), resource_type))
+                        url_tail = ".".join((subpath, service, url_tail))
+                        parts = (base_url, url_tail)
         url = "/".join(parts)
 
     if parameters:
